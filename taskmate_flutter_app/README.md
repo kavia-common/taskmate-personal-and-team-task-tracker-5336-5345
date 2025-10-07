@@ -146,6 +146,60 @@ The app boots with:
 - Implement CRUD UI and Dashboard
 - Gate Analytics collection based on user consent if required
 
+## Notifications
+
+This app includes:
+- Local notifications for task reminders via `flutter_local_notifications`
+- Push notifications stub via `firebase_messaging` with hooks to integrate FCM/APNs
+
+Local notifications (Reminders):
+- Channel: taskmate_reminders_channel (Android)
+- Timezone-aware scheduling using the `timezone` package bundled by flutter_local_notifications
+- Code: lib/features/notifications/notifications_service.dart
+- Permissions:
+  - Android 13+: POST_NOTIFICATIONS runtime permission is requested automatically
+  - iOS/macOS: Permissions requested via Darwin initialization in NotificationsService
+- Behavior:
+  - TaskRepository schedules reminders when a task is created/updated (upsert) and cancels them when deleted.
+  - Scheduling is resilient: repository operations do not fail if notification scheduling fails.
+
+Push notifications (FCM) Stub:
+- Code: lib/features/notifications/push_notifications_stub.dart
+- What it does now:
+  - Requests FCM permission
+  - Logs FCM token and refresh events
+  - Hooks foreground (onMessage) and background handlers
+- What you must do to deliver real push:
+  1) iOS: Configure APNs in Firebase Console and enable Push Capability in Xcode.
+  2) Android/iOS: Ensure firebase core config files exist (google-services.json / GoogleService-Info.plist).
+  3) Backend: Send push notifications through FCM to device tokens stored per user.
+  4) Optionally surface foreground messages as in-app UI or local notifications.
+
+Android Setup Notes:
+- AndroidManifest adds:
+  - uses-permission android.permission.POST_NOTIFICATIONS (Android 13+)
+  - uses-permission android.permission.INTERNET
+  - meta-data com.google.firebase.messaging.default_notification_channel_id = taskmate_reminders_channel
+- If you change the local reminder channel id, also update the meta-data value.
+
+iOS/macOS Notes:
+- Requesting permissions is handled in NotificationsService; ensure you ask for user consent at appropriate time.
+- APNs setup is required for push (see Firebase docs).
+
+Usage Overview:
+- NotificationsService.initialize() and PushNotificationsStub.initialize() are called in main() once Firebase initialization completes.
+- TaskRepository will schedule reminders for any TaskItem.reminders that are in the future.
+
+Troubleshooting:
+- If reminders do not appear on Android:
+  - Verify notification permission was granted (Android 13+)
+  - Ensure app is not battery-optimized aggressively on the device
+  - Confirm channel exists via adb shell dumpsys notification
+- If FCM does not deliver:
+  - Ensure token is printed in logs
+  - Confirm device has Google Play Services (Android) and APNs setup (iOS)
+  - Verify you are sending to the correct token and Firebase project
+
 ## Useful Links
 - Flutter: https://docs.flutter.dev
 - FlutterFire: https://firebase.flutter.dev
@@ -153,3 +207,4 @@ The app boots with:
 - Cloud Firestore: https://firebase.google.com/docs/firestore/quickstart
 - Cloud Messaging: https://firebase.google.com/docs/cloud-messaging
 - Provider: https://pub.dev/packages/provider
+- flutter_local_notifications: https://pub.dev/packages/flutter_local_notifications

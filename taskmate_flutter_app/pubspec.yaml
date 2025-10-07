@@ -28,6 +28,7 @@ dependencies:
 
   # Optional/local notifications (stubbed for later integration)
   flutter_local_notifications: ^18.0.1
+  timezone: ^0.9.3
 
   # Existing utilities that may still be used in parts of the app
   shared_preferences: ^2.5.3

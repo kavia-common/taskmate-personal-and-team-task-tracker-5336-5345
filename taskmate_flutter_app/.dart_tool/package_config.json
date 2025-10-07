@@ -489,7 +489,7 @@
     },
     {
       "name": "timezone",
-      "rootUri": "file:///home/kavia/.pub-cache/hosted/pub.dev/timezone-0.10.1",
+      "rootUri": "file:///home/kavia/.pub-cache/hosted/pub.dev/timezone-0.9.4",
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
@@ -536,7 +536,7 @@
       "languageVersion": "3.7"
     }
   ],
-  "generated": "2025-10-07T15:47:37.989927Z",
+  "generated": "2025-10-07T16:08:40.335498Z",
   "generator": "pub",
   "generatorVersion": "3.7.0",
   "flutterRoot": "file:///opt/flutter",
