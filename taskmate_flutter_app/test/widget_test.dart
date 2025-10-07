@@ -1,18 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:taskmate_flutter_app/main.dart';
+import 'package:flutter/material.dart';
+import 'package:taskmate_flutter_app/app.dart';
 
 void main() {
-  testWidgets('App generation message displayed', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-
-    expect(find.text('taskmate_flutter_app App is being generated...'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
-  });
-
-  testWidgets('App bar has correct title', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-
-    expect(find.text('taskmate_flutter_app'), findsOneWidget);
+  testWidgets('Renders TaskMate app shell', (tester) async {
+    await tester.pumpWidget(const TaskMateApp(firebaseConfigured: false));
+    expect(find.text('TaskMate'), findsWidgets);
+    expect(find.byType(MaterialApp), findsOneWidget);
   });
 }
