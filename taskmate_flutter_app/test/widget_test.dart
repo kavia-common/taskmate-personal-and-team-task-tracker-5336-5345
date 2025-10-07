@@ -3,16 +3,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:taskmate_flutter_app/main.dart';
 
 void main() {
-  testWidgets('App generation message displayed', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+  testWidgets('App boots and shows SignIn or Main Tabs', (WidgetTester tester) async {
+    await tester.pumpWidget(const TaskMateApp());
+    await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('taskmate_flutter_app App is being generated...'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    final signInButton = find.byIcon(Icons.login);
+    final bottomBar = find.byType(BottomNavigationBar);
+
+    final hasSignIn = signInButton.evaluate().isNotEmpty;
+    final hasBottomBar = bottomBar.evaluate().isNotEmpty;
+
+    expect(hasSignIn || hasBottomBar, isTrue);
   });
 
-  testWidgets('App bar has correct title', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-
-    expect(find.text('taskmate_flutter_app'), findsOneWidget);
+  testWidgets('Has router-driven navigation (Navigator present)', (WidgetTester tester) async {
+    await tester.pumpWidget(const TaskMateApp());
+    await tester.pump(const Duration(milliseconds: 50));
+    expect(find.byType(Navigator), findsWidgets);
   });
 }
